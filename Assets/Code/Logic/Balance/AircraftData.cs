@@ -10,5 +10,7 @@ namespace Code.Logic.Balance
         public float YawSpeed = 100f;
         public float RollSpeed = 100f;
         public float BoostMultiplier = 2f;
+        public float MaxPitchAngle = 45f;
+        public float MaxRollAngle = 45f;
     }
 }
