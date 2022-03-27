@@ -1,4 +1,5 @@
 ﻿using Code.Infrastructure.Assets;
+using Code.Logic.Interactions;
 using UnityEngine;
 
 namespace Code.Infrastructure.Factories
@@ -7,8 +8,8 @@ namespace Code.Infrastructure.Factories
     {
         private readonly IAssetProvider _assetProvider;
 
-        private GameObject _checkPointPrefab;
-        private GameObject _finishCheckPointPrefab;
+        private CheckPoint _checkPointPrefab;
+        private FinishCheckPoint _finishCheckPointPrefab;
 
         public CheckPointsFactory(IAssetProvider assetProvider)
         {
@@ -18,12 +19,12 @@ namespace Code.Infrastructure.Factories
 
         private void Load()
         {
-            _checkPointPrefab = _assetProvider.Load<GameObject>(AssetPath.CheckPointPrefab);
-            _finishCheckPointPrefab = _assetProvider.Load<GameObject>(AssetPath.FinishCheckPointPrefab);
+            _checkPointPrefab = _assetProvider.Load<CheckPoint>(AssetPath.CheckPointPrefab);
+            _finishCheckPointPrefab = _assetProvider.Load<FinishCheckPoint>(AssetPath.FinishCheckPointPrefab);
         }
 
-        public GameObject CreateCheckPoint() => Object.Instantiate(_checkPointPrefab);
+        public CheckPoint CreateCheckPoint() => Object.Instantiate(_checkPointPrefab);
 
-        public GameObject CreateFinishCheckPoint() => Object.Instantiate(_finishCheckPointPrefab);
+        public FinishCheckPoint CreateFinishCheckPoint() => Object.Instantiate(_finishCheckPointPrefab);
     }
 }

@@ -1,10 +1,11 @@
+using Code.Logic.Interactions;
 using UnityEngine;
 
 namespace Code.Infrastructure.Factories
 {
     public interface ICheckPointsFactory
     {
-        GameObject CreateCheckPoint();
-        GameObject CreateFinishCheckPoint();
+        CheckPoint CreateCheckPoint();
+        FinishCheckPoint CreateFinishCheckPoint();
     }
 }
