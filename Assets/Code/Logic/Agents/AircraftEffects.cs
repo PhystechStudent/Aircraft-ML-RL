@@ -10,9 +10,9 @@ namespace Code.Logic.Agents
 		[SerializeField] private ParticleSystem _explodeParticle;
 		[SerializeField] private GameObject _mesh;
 
-		private void Start() => _interaction.AgentCollided += OnAgentCollided;
+		private void Start() => _interaction.EnvironmentCollided += OnAgentCollided;
 
-		private void OnDestroy() => _interaction.AgentCollided -= OnAgentCollided;
+		private void OnDestroy() => _interaction.EnvironmentCollided -= OnAgentCollided;
 
 		private void OnAgentCollided()
 		{
@@ -29,7 +29,7 @@ namespace Code.Logic.Agents
 			_trail.emitting = boost;
 		}
 
-		private void StopEmitTrail() => _trail.emitting = false;
+		public void StopEmitTrail() => _trail.emitting = false;
 
 		private void PlayExplodeParticle() => _explodeParticle.Play();
 

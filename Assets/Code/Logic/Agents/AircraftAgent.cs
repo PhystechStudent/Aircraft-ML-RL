@@ -1,103 +1,174 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Code.Infrastructure.Assets;
+using Code.Logic.Balance;
 using Code.Logic.Interactions;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 using UnityEngine;
 using Zenject;
 
 namespace Code.Logic.Agents
 {
-	public class AircraftAgent : Agent
-	{
-		[SerializeField] private AircraftMovement _movement;
-		[SerializeField] private AircraftEffects _effects;
-		[SerializeField] private AircraftInteraction _interaction;
+    public class AircraftAgent : Agent
+    {
+        private const string CheckpointRadiusKey = "checkpoint_radius";
 
-		private Dictionary<int, AgentDecision> _decisions;
+        [SerializeField] private AircraftMovement _movement;
+        [SerializeField] private AircraftEffects _effects;
+        [SerializeField] private AircraftInteraction _interaction;
+        [SerializeField] private int _order;
+        [SerializeField] private int _stepTimeout = 300;
 
-		private CheckPointSpawner _checkPointSpawner;
-		
-		private int _nextCheckPointIndex;
-		
-		protected IReadOnlyDictionary<int, AgentDecision> Decisions => _decisions;
+        private CheckPointSpawner _checkPointSpawner;
+        private IAssetProvider _assetProvider;
+        private AgentRewardData _rewardData;
 
-		[Inject]
-		private void Construct(CheckPointSpawner checkPointSpawner)
-		{
-			_checkPointSpawner = checkPointSpawner;
-		}
-		
-		private void Start()
-		{
-			_decisions = new Dictionary<int, AgentDecision>
-			{
-				{0, AgentDecision.None},
-				{1, AgentDecision.Up},
-				{2, AgentDecision.Down}
-			};
-
-			//_interaction.CheckPointTriggered += OnCheckPointTriggered;
-		}
+        private int _nextCheckPointIndex;
+        private float _nextStepTimeout;
 
 
-		private void OnDestroy()
-		{
-			//_interaction.CheckPointTriggered -= OnCheckPointTriggered;
-		}
+        [Inject]
+        private void Construct(CheckPointSpawner checkPointSpawner, IAssetProvider assetProvider)
+        {
+            _checkPointSpawner = checkPointSpawner;
+            _assetProvider = assetProvider;
+        }
 
-		private void OnCheckPointTriggered(CheckPoint checkPoint)
-		{
-			if(checkPoint != _checkPointSpawner.CheckPoints[_nextCheckPointIndex]) return;
+        public override void Initialize()
+        {
+            if (Config.GameMode == GameMode.Game)
+                MaxStep = 0;
 
-			CollectCheckPoint();
-		}
+            _rewardData = _assetProvider.Load<AgentRewardData>(AssetPath.RewardData);
 
-		private void CollectCheckPoint()
-		{
-			_nextCheckPointIndex = (_nextCheckPointIndex + 1) % _checkPointSpawner.CheckPoints.Count;
-			
-			if (Config.GameMode == GameMode.Training)
-			{
-				AddReward(0.5f);
-			}
-		}
+            _interaction.CheckPointTriggered += OnCheckPointTriggered;
+            _interaction.EnvironmentCollided += OnEnvironmentCollided;
+        }
 
-		public override void OnActionReceived(ActionBuffers actions)
-		{
-			ActionSegment<int> discreteActions = actions.DiscreteActions;
 
-			Dictionary<ActionType, int> actionsTypes = new()
-			{
-				{ActionType.Pitch, discreteActions[0]},
-				{ActionType.Yaw, discreteActions[1]},
-				{ActionType.Boost, discreteActions[2]},
-			};
+        private void OnDestroy()
+        {
+            _interaction.CheckPointTriggered -= OnCheckPointTriggered;
+            _interaction.EnvironmentCollided -= OnEnvironmentCollided;
+        }
 
-			int pitch = actionsTypes[ActionType.Pitch];
-			int yaw = actionsTypes[ActionType.Yaw];
-			bool boost = actionsTypes[ActionType.Boost] == 1;
+        private void OnCheckPointTriggered(CheckPoint checkPoint)
+        {
+            if (checkPoint != _checkPointSpawner.CheckPoints[_nextCheckPointIndex]) return;
 
-			if (pitch == 2) pitch = -1;
-			if (yaw == 2) yaw = -1;
+            CollectCheckPoint();
+        }
 
-			_movement.Move(boost);
-			_movement.Rotate(pitch, yaw);
-			_effects.EmitTrail(boost);
-		}
-	}
+        private void OnEnvironmentCollided()
+        {
+            if (Config.GameMode == GameMode.Training)
+            {
+                AddReward(_rewardData.CollisionReward);
+                EndEpisode();
+            }
+            else StartCoroutine(ResetPositionWithDelay());
+        }
 
-	public enum AgentDecision
-	{
-		Up = 1,
-		None = 0,
-		Down = 2
-	}
+        public override void OnActionReceived(ActionBuffers actions)
+        {
+            if (_movement.IsFrozen) return;
 
-	public enum ActionType
-	{
-		Pitch,
-		Yaw,
-		Boost
-	}
+            ActionSegment<int> discreteActions = actions.DiscreteActions;
+
+            Dictionary<ActionType, int> actionsTypes = new()
+            {
+                {ActionType.Pitch, discreteActions[0]},
+                {ActionType.Yaw, discreteActions[1]},
+                {ActionType.Boost, discreteActions[2]},
+            };
+
+            int pitch = actionsTypes[ActionType.Pitch];
+            int yaw = actionsTypes[ActionType.Yaw];
+            bool boost = actionsTypes[ActionType.Boost] == 1;
+
+            if (pitch == 2) pitch = -1;
+            if (yaw == 2) yaw = -1;
+
+            _movement.Move(boost);
+            _movement.Rotate(pitch, yaw);
+            _effects.EmitTrail(boost);
+
+            if (Config.GameMode == GameMode.Game) return;
+
+            GiveReward();
+            CheckDistanceToCheckPoint();
+        }
+
+        public override void CollectObservations(VectorSensor sensor)
+        {
+            //Aircraft velocity
+            sensor.AddObservation(transform.InverseTransformDirection(_movement.Velocity));
+
+            //Distance to next checkpoint
+            sensor.AddObservation(GetDistanceToNextCheckPoint());
+
+            //Next checkpoint orientation
+            Vector3 nextCheckPointOrientation = _checkPointSpawner.CheckPoints[_nextCheckPointIndex].transform.forward;
+            sensor.AddObservation(nextCheckPointOrientation);
+        }
+
+        public override void OnEpisodeBegin()
+        {
+            _movement.ResetVelocity();
+            _movement.ResetPosition(_nextCheckPointIndex, _order);
+            _effects.StopEmitTrail();
+
+            if (Config.GameMode == GameMode.Training)
+                _nextStepTimeout = StepCount + _stepTimeout;
+        }
+
+        private IEnumerator ResetPositionWithDelay()
+        {
+            yield return new WaitForSeconds(2f);
+            _movement.ResetPosition(_nextCheckPointIndex, _order);
+        }
+
+        private void GiveReward()
+        {
+            AddReward(_rewardData.BaseReward / MaxStep);
+
+            if (StepCount > _nextStepTimeout)
+            {
+                AddReward(_rewardData.NegativeReward);
+                EndEpisode();
+            }
+        }
+
+        private void CheckDistanceToCheckPoint()
+        {
+            Vector3 distanceToCheckPoint = GetDistanceToNextCheckPoint();
+
+            if (distanceToCheckPoint.magnitude <
+                Academy.Instance.EnvironmentParameters.GetWithDefault(CheckpointRadiusKey, 0f))
+                CollectCheckPoint();
+        }
+
+
+        private void CollectCheckPoint()
+        {
+            _nextCheckPointIndex = (_nextCheckPointIndex + 1) % _checkPointSpawner.CheckPoints.Count;
+
+            if (Config.GameMode == GameMode.Training)
+            {
+                AddReward(_rewardData.PositiveReward);
+                _nextStepTimeout = StepCount + _stepTimeout;
+            }
+        }
+
+        private Vector3 GetDistanceToNextCheckPoint()
+        {
+            Vector3 distance = _checkPointSpawner.CheckPoints[_nextCheckPointIndex].transform.position -
+                               transform.position;
+            Vector3 localDistance = transform.InverseTransformDirection(distance);
+
+            return localDistance;
+        }
+    }
 }

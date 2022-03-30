@@ -326,6 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _checkPointSpawner: {fileID: 1673403365}
+  _path: {fileID: 1929939749}
 --- !u!1 &1673403364
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,9 +564,41 @@ PrefabInstance:
       propertyPath: m_Model
       value: 
       objectReference: {fileID: 5022602860645237092, guid: 513b4e2f071a8994d840e89e8b393953, type: 3}
+    - target: {fileID: 3828733146744432282, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3925388434195083356, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4026229800205947952, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027111679641234010, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027113960162777576, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: lengthInSec
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027113960162777576, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027355449687823230, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027524460476204410, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027849767945993708, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5143098223543970583, guid: fd5a7c8d71547644dad07afaef89baaf, type: 3}
       propertyPath: m_IsActive
@@ -652,7 +685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 1
+    VectorObservationSize: 9
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -663,7 +696,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: AircraftPlayer
   TeamId: 0
   m_UseChildSensors: 1
@@ -764,3 +797,5 @@ MonoBehaviour:
   _movement: {fileID: 9146339534007483482}
   _effects: {fileID: 9146339534007483481}
   _interaction: {fileID: 9146339534007483480}
+  _order: 0
+  _stepTimeout: 300

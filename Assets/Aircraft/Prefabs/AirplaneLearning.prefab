@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 4576565313142594920}
   - component: {fileID: 806710786583775677}
   - component: {fileID: 2499777065925819223}
+  - component: {fileID: 233238958865793587}
   m_Layer: 0
   m_Name: airplane_propeller
   m_TagString: Untagged
@@ -551,6 +552,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &233238958865793587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2852865426222947575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744d3093dffc448fa4047a76fcda2990, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 15
 --- !u!1 &2882645231023756400
 GameObject:
   m_ObjectHideFlags: 0
