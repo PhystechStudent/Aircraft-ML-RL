@@ -13,10 +13,10 @@ namespace Code.Logic.Agents
 
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private AircraftInteraction _interaction;
+        [SerializeField] private CheckPointSpawner _checkPointSpawner;
+        [SerializeField] private CinemachineSmoothPath _racePath;
 
         private IAssetProvider _assetProvider;
-        private CinemachineSmoothPath _racePath;
-        private CheckPointSpawner _checkPointSpawner;
 
         private AircraftData _data;
 
@@ -30,12 +30,9 @@ namespace Code.Logic.Agents
         public Vector3 Velocity => _rigidbody.velocity;
 
         [Inject]
-        private void Construct(IAssetProvider assetProvider, CinemachineSmoothPath racePath,
-            CheckPointSpawner checkPointSpawner)
+        private void Construct(IAssetProvider assetProvider)
         {
             _assetProvider = assetProvider;
-            _racePath = racePath;
-            _checkPointSpawner = checkPointSpawner;
         }
 
         private void Start()
@@ -49,7 +46,7 @@ namespace Code.Logic.Agents
         private void OnEnvironmentCollided()
         {
             if (Config.GameMode == GameMode.Training) return;
-            
+
             StartCoroutine(Freeze());
         }
 
@@ -76,9 +73,9 @@ namespace Code.Logic.Agents
             Vector3 startPosition = _racePath.EvaluatePosition(startPoint);
             Quaternion startRotation = _racePath.EvaluateOrientation(startPoint);
             Vector3 positionOffset = Vector3.right * (order - 4 / 2f) * Random.Range(9f, 10f);
-            
-           transform.position = startPosition + startRotation * positionOffset;
-           transform.rotation = startRotation;
+
+            transform.position = startPosition + startRotation * positionOffset;
+            transform.rotation = startRotation;
         }
 
         public void ResetVelocity()

@@ -2,7 +2,7 @@
 {
 	public static class Config
 	{
-		public static GameMode GameMode = GameMode.Game;
+		public static GameMode GameMode = GameMode.Training;
 	}
 
 	public enum GameMode

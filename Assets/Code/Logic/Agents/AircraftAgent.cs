@@ -18,10 +18,10 @@ namespace Code.Logic.Agents
         [SerializeField] private AircraftMovement _movement;
         [SerializeField] private AircraftEffects _effects;
         [SerializeField] private AircraftInteraction _interaction;
+        [SerializeField] private CheckPointSpawner _checkPointSpawner;
         [SerializeField] private int _order;
         [SerializeField] private int _stepTimeout = 300;
 
-        private CheckPointSpawner _checkPointSpawner;
         private IAssetProvider _assetProvider;
         private AgentRewardData _rewardData;
 
@@ -30,9 +30,8 @@ namespace Code.Logic.Agents
 
 
         [Inject]
-        private void Construct(CheckPointSpawner checkPointSpawner, IAssetProvider assetProvider)
+        private void Construct(IAssetProvider assetProvider)
         {
-            _checkPointSpawner = checkPointSpawner;
             _assetProvider = assetProvider;
         }
 
@@ -98,7 +97,7 @@ namespace Code.Logic.Agents
             if (Config.GameMode == GameMode.Game) return;
 
             GiveReward();
-            CheckDistanceToCheckPoint();
+            //CheckDistanceToCheckPoint();
         }
 
         public override void CollectObservations(VectorSensor sensor)

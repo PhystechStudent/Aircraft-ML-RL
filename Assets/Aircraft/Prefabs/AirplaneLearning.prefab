@@ -94,6 +94,12 @@ GameObject:
   - component: {fileID: 4269323204501575489}
   - component: {fileID: 7928156951134546537}
   - component: {fileID: 2029753067689775909}
+  - component: {fileID: 7141861979254262905}
+  - component: {fileID: 4412977532714974725}
+  - component: {fileID: 3341601777848672447}
+  - component: {fileID: 6018283605253125298}
+  - component: {fileID: 5777012875890032184}
+  - component: {fileID: 1955029067931205388}
   m_Layer: 0
   m_Name: AirplaneLearning
   m_TagString: agent
@@ -236,6 +242,113 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &7141861979254262905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 9
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 0
+      BranchSizes: 030000000300000002000000
+    VectorActionSize: 030000000300000002000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: AircraftLearning
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_ObservableAttributeHandling: 0
+--- !u!114 &4412977532714974725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43f28aa44ae34ac0835b47c6ba5dd0a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 5000
+  _movement: {fileID: 3341601777848672447}
+  _effects: {fileID: 5777012875890032184}
+  _interaction: {fileID: 6018283605253125298}
+  _order: 0
+  _stepTimeout: 300
+--- !u!114 &3341601777848672447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 151c043ac96948d786d92ab251216cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 7928156951134546537}
+  _interaction: {fileID: 6018283605253125298}
+--- !u!114 &6018283605253125298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e66df6259044ba978232d6f5b1827e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5777012875890032184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8821fbbc53bc4d63bd81f43b986b2ec9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interaction: {fileID: 6018283605253125298}
+  _trail: {fileID: 2029753067689775909}
+  _explodeParticle: {fileID: 814555136584022623}
+  _mesh: {fileID: 1105933827309576455}
+--- !u!114 &1955029067931205388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965167856514819410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  TakeActionsBetweenDecisions: 1
 --- !u!1 &1105933827309576455
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,6 +911,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8385434484964945439, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8545761405798528361, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8545970409348144123, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8546086716458651135, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8547095512259255477, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8547343922253652703, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8547346598057120109, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+      propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -805,5 +942,10 @@ PrefabInstance:
 --- !u!4 &684766871807302817 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8382149102810331027, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
+  m_PrefabInstance: {fileID: 9066775078080473906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &814555136584022623 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8547346598057120109, guid: e8964146fc8f995448ab83ac9ed257b4, type: 3}
   m_PrefabInstance: {fileID: 9066775078080473906}
   m_PrefabAsset: {fileID: 0}
