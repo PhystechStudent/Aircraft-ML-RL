@@ -115,6 +115,7 @@ namespace Code.Logic.Agents
 
         public override void OnEpisodeBegin()
         {
+            RandomizeCheckPointIndex();
             _movement.ResetVelocity();
             _movement.ResetPosition(_nextCheckPointIndex, _order);
             _effects.StopEmitTrail();
@@ -122,6 +123,8 @@ namespace Code.Logic.Agents
             if (Config.GameMode == GameMode.Training)
                 _nextStepTimeout = StepCount + _stepTimeout;
         }
+
+        private void RandomizeCheckPointIndex() => _nextCheckPointIndex = Random.Range(0, _checkPointSpawner.CheckPoints.Count);
 
         private IEnumerator ResetPositionWithDelay()
         {
