@@ -44,6 +44,7 @@ namespace Code.Logic.Agents
 
             _interaction.CheckPointTriggered += OnCheckPointTriggered;
             _interaction.EnvironmentCollided += OnEnvironmentCollided;
+
         }
 
 
@@ -97,7 +98,8 @@ namespace Code.Logic.Agents
             if (Config.GameMode == GameMode.Game) return;
 
             GiveReward();
-            //CheckDistanceToCheckPoint();
+            CheckDistanceToCheckPoint();
+            
         }
 
         public override void CollectObservations(VectorSensor sensor)
